@@ -1,0 +1,13 @@
+language: node_js
+node_js:
+  - "lts/*"
+services:
+  - mongodb
+branches:
+  only:
+    - master
+#deploy:
+#  provider: heroku
+#  api_key:
+#    secure: "917392c7-c238-4b52-939b-0b1b908179b4"
+#  app: ads-book-prod

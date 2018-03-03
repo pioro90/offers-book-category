@@ -4,6 +4,10 @@ export default [
         description: 'New phones'
     },
     {
+        name: 'Smarthphones',
+        description: 'Smartphones'
+    },
+    {
         name: 'Cars',
         description: 'All cars',
         child: [

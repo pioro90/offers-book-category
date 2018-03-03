@@ -12,7 +12,7 @@ export class CategoryRepository {
         this.categoryModel = model<ICategory>('Category', CategorySchema);
     }
 
-    create(category: any): Promise<any> {
+    create(category: any): Promise<ICategory> {
         return this.categoryModel.create(category);
     }
 

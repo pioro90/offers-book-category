@@ -20,7 +20,7 @@ export class App {
             })
             .then((httpServer: Server) => {
                 this.httpServer = httpServer;
-                return console.log(`Server is listening on 3000`)
+                console.log(`Server is listening on 3000`)
             })
             .catch(err => {
                 console.log(err);

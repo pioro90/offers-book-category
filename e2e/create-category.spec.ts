@@ -20,7 +20,7 @@ describe('Create category', () => {
             .then(() => app.shutDown());
     });
 
-    it('should return created category id ', function () {
+    it('should return created category id', () => {
         return chaiRequest
             .post('/categories')
             .send(categories[0])

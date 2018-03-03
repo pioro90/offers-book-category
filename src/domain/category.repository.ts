@@ -15,4 +15,9 @@ export class CategoryRepository {
     create(category: any): Promise<any> {
         return this.categoryModel.create(category);
     }
+
+    getById(id: string): Promise<ICategory> {
+        return this.categoryModel.findById(id)
+            .exec();
+    }
 }

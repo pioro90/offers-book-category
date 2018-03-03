@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec 'ts-node' src/index.ts",
-    "test": "export NODE_ENV=testing && mocha -r ts-node/register e2e/**/*.spec.ts -t 10000"
+    "test": "export NODE_ENV=testing && mocha -r ts-node/register e2e/*.spec.ts -t 10000"
   },
   "repository": {
     "type": "git",

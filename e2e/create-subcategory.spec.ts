@@ -3,7 +3,7 @@ import * as httpStatus from 'http-status';
 
 
 import { chaiRequest } from './shared/chai-request';
-import categories from './data/categories.data';
+import categories from './shared/category-app.data';
 import { app } from '../src/app';
 import { CategoryAppTest } from './shared/category-app.test';
 

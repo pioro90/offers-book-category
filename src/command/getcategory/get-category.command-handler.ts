@@ -8,21 +8,21 @@ import { ICategory } from '../../domain/category';
 @injectable()
 export class GetCategoryCommandHandler implements CommandHandler<GetCategoryCommand, Promise<GetCategoryCommandResult>> {
 
-    constructor(@inject(CategoryRepository) private categoryRepository: CategoryRepository) {}
+    constructor(@inject(CategoryRepository) private categoryRepository: CategoryRepository) {
+    }
 
-    handle(command: GetCategoryCommand): Promise<GetCategoryCommandResult> {
-        return this.categoryRepository.getById(command.id)
-            .then((category: ICategory) => {
-               return new GetCategoryCommandResult(
-                   category.name,
-                   category.description,
-                   category.parent,
-                   category.ancestors,
-                   category.createdAt,
-                   category.updatedAt,
-                   category.deletedAt
-               );
-            });
+    async handle(command: GetCategoryCommand): Promise<GetCategoryCommandResult> {
+        const category: ICategory = await this.categoryRepository.getById(command.id);
+
+        return new GetCategoryCommandResult(
+            category.name,
+            category.description,
+            category.parent,
+            category.ancestors,
+            category.createdAt,
+            category.updatedAt,
+            category.deletedAt
+        );
     }
 
 }

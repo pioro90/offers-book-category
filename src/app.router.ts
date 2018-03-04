@@ -1,13 +1,13 @@
 import { inject, injectable } from 'inversify';
 import { Router } from 'express';
-import { CreateCategoryHandler } from './create-category.handler';
-import { GetCategoryHandler } from './get-category.handler';
-import { FindCategoriesHandler } from './find-categories.handler';
-import { CreateSubcategoryHandler } from './create-subcategory.handler';
+import { CreateCategoryHandler } from './api/create-category.handler';
+import { GetCategoryHandler } from './api/get-category.handler';
+import { FindCategoriesHandler } from './api/find-categories.handler';
+import { CreateSubcategoryHandler } from './api/create-subcategory.handler';
 
 
 @injectable()
-export class ApiRouter {
+export class AppRouter {
 
     constructor(@inject(CreateCategoryHandler) private createCategoryHandler: CreateCategoryHandler,
                 @inject(GetCategoryHandler) private getCategoryHandler: GetCategoryHandler,

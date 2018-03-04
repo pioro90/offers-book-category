@@ -11,24 +11,18 @@ export class CreateSubcategoryCommandHandler implements CommandHandler<CreateSub
     constructor(@inject(CategoryRepository) private categoryRepository: CategoryRepository) {
     }
 
-    handle(command: CreateSubcategoryCommand): Promise<CreateSubcategoryCommandResult> {
+    async handle(command: CreateSubcategoryCommand): Promise<CreateSubcategoryCommandResult> {
         const {name, description, parentId} = command;
+        const category: ICategory = await this.categoryRepository.create({name, description});
+        const parentCategory: ICategory = await this.categoryRepository.getById(parentId);
 
-        return this.categoryRepository
-            .create({name, description})
-            .then((category: ICategory) => {
-                return Promise.all([category, this.categoryRepository.getById(parentId)]);
-            })
-            .then((results: ICategory[]) => {
-                const [category, parentCategory] = results;
+        const parentAncestors = [...parentCategory.ancestors];
 
-                const parentAncestors = [...parentCategory.ancestors];
+        category.parent = parentCategory.id;
+        category.ancestors = [parentCategory.id, ...parentAncestors];
 
-                category.parent = parentCategory.id;
-                category.ancestors = [parentCategory.id, ...parentAncestors];
-
-                return category.save();
-            })
-            .then((category: ICategory) => new CreateSubcategoryCommandResult(category._id))
+        await category.save();
+        
+        return new CreateSubcategoryCommandResult(category._id);
     }
 }

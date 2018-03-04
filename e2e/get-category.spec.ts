@@ -1,5 +1,4 @@
 import * as chai from 'chai';
-import * as httpStatus from 'http-status';
 
 
 import { chaiRequest } from './shared/chai-request';
@@ -12,40 +11,30 @@ chai.should();
 describe('Get category', () => {
     let categoryId: string;
 
-    before(() => {
-        return app.startUp()
-            .then(() => {
-                return chaiRequest
-                    .post('/categories')
-                    .send(categories[0])
-                    .then(res => {
-                        categoryId = res.body.id;
-                    })
-            })
+    before(async () => {
+        await app.startUp();
+
+        const res: any = await chaiRequest
+            .post('/categories')
+            .send(categories[0]);
+        categoryId = res.body.id;
     });
 
-    after(() => {
-        return CategoryAppTest.cleanDatabase()
-            .then(() => app.shutDown());
+    after(async () => {
+        await CategoryAppTest.cleanDatabase();
+        await app.shutDown();
     });
 
-    it('should return category', () => {
-        return chaiRequest
-            .get(`/categories/${categoryId}`)
-            .then(res => {
-                res.should.have.status(httpStatus.OK);
-                return res.body;
-            })
-            .then(category => {
-                category.should.have.all.keys(
-                    'name',
-                    'ancestors',
-                    'description',
-                    'createdAt',
-                    'updatedAt'
-                )
-            })
+    it('should return category', async () => {
+        const res: any = await chaiRequest
+            .get(`/categories/${categoryId}`);
+        res.body.should.have.all.keys(
+            'name',
+            'ancestors',
+            'description',
+            'createdAt',
+            'updatedAt'
+        )
     });
-
 
 });

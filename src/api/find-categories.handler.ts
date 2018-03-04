@@ -7,23 +7,25 @@ import { FindCategoriesCommandResult } from '../command/findcategories/find-cate
 @injectable()
 export class FindCategoriesHandler {
 
-    constructor(@inject(FindCategoriesCommandHandler) private findCategoriesCommandHandler: FindCategoriesCommandHandler) {
+    constructor(@inject(FindCategoriesCommandHandler) private commandHandler: FindCategoriesCommandHandler) {
     }
 
-    handle(req: Request, res: Response, next: NextFunction): void {
-        const findCategoriesCommand: FindCategoriesCommand = new FindCategoriesCommand(
-            req.query.name,
-            req.query.description,
-            req.query.parent,
-            req.query.ancestors,
-            parseInt(req.query.start),
-            parseInt(req.query.limit)
-        );
+    async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const command: FindCategoriesCommand = new FindCategoriesCommand(
+                req.query.name,
+                req.query.description,
+                req.query.parent,
+                req.query.ancestors,
+                parseInt(req.query.start),
+                parseInt(req.query.limit)
+            );
 
-        this.findCategoriesCommandHandler
-            .handle(findCategoriesCommand)
-            .then((results: FindCategoriesCommandResult) => res.json(results))
-            .catch((error: any) => next(error))
+            const result: FindCategoriesCommandResult = await this.commandHandler.handle(command);
+            res.json(result);
+        } catch (e) {
+            next(e);
+        }
     }
 
 }

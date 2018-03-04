@@ -8,15 +8,17 @@ import { GetCategoryCommandResult } from '../command/getcategory/get-category.co
 @injectable()
 export class GetCategoryHandler {
 
-    constructor(@inject(GetCategoryCommandHandler) private getCategoryCommandHandler: GetCategoryCommandHandler) {
+    constructor(@inject(GetCategoryCommandHandler) private commandHandler: GetCategoryCommandHandler) {
     }
 
-    handle(req: Request, res: Response, next: NextFunction): void {
-        const getCategoryCommand: GetCategoryCommand = new GetCategoryCommand(req.params.id);
+    async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const command: GetCategoryCommand = new GetCategoryCommand(req.params.id);
+            const result: GetCategoryCommandResult = await this.commandHandler.handle(command);
 
-        this.getCategoryCommandHandler
-            .handle(getCategoryCommand)
-            .then((results: GetCategoryCommandResult) => res.json(results))
-            .catch((error: any) => next(error));
+            res.json(result);
+        } catch (e) {
+            next(e);
+        }
     }
 }

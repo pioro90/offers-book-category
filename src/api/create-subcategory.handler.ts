@@ -9,20 +9,21 @@ import { CreateSubcategoryCommandResult } from '../command/createsubcategory/cre
 @injectable()
 export class CreateSubcategoryHandler {
 
-    constructor(@inject(CreateSubcategoryCommandHandler) private createSubcategoryCommandHandler: CreateSubcategoryCommandHandler) {
+    constructor(@inject(CreateSubcategoryCommandHandler) private commandHandler: CreateSubcategoryCommandHandler) {
     }
 
-    handle(req: Request, res: Response, next: NextFunction): void {
-        const command: CreateSubcategoryCommand = new CreateSubcategoryCommand(
-            req.params.id,
-            req.body.name,
-            req.body.description
-        );
-
-        this.createSubcategoryCommandHandler
-            .handle(command)
-            .then((results: CreateSubcategoryCommandResult) => res.status(httpStatus.CREATED).json(results))
-            .catch((error: any) => next(error));
+    async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const command: CreateSubcategoryCommand = new CreateSubcategoryCommand(
+                req.params.id,
+                req.body.name,
+                req.body.description
+            );
+            const result: CreateSubcategoryCommandResult = await this.commandHandler.handle(command);
+            res.status(httpStatus.CREATED).json(result);
+        } catch (e) {
+            next(e);
+        }
     }
 
 }

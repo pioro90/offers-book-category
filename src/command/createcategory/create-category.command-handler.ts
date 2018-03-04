@@ -12,10 +12,10 @@ export class CreateCategoryCommandHandler implements CommandHandler<CreateCatego
     constructor(@inject(CategoryRepository) private categoryRepository: CategoryRepository) {
     }
 
-    handle(command: CreateCategoryCommand): Promise<CreateCategoryCommandResult> {
-        return this.categoryRepository
-            .create(command)
-            .then((category: ICategory) => new CreateCategoryCommandResult(category._id));
+    async handle(command: CreateCategoryCommand): Promise<CreateCategoryCommandResult> {
+        const category: ICategory = await this.categoryRepository.create(command);
+
+        return new CreateCategoryCommandResult(category._id);
     }
 
 }

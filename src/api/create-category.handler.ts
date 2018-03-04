@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { CREATED } from 'http-status';
+import * as httpStatus from 'http-status';
 import { CreateCategoryCommandHandler } from '../command/createcategory/create-category.command-handler';
 import { NextFunction, Request, Response } from 'express';
 import { CreateCategoryCommand } from '../command/createcategory/create-category.command';
@@ -8,15 +8,17 @@ import { CreateCategoryCommandResult } from '../command/createcategory/create-ca
 
 @injectable()
 export class CreateCategoryHandler {
-    constructor(@inject(CreateCategoryCommandHandler) private createCategoryCommandHandler: CreateCategoryCommandHandler) {
+    constructor(@inject(CreateCategoryCommandHandler) private commandHandler: CreateCategoryCommandHandler) {
     }
 
-    handle(req: Request, res: Response, next: NextFunction): void {
-        const createCategoryCommand: CreateCategoryCommand = req.body;
+    async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const command: CreateCategoryCommand = req.body;
+            const result: CreateCategoryCommandResult = await this.commandHandler.handle(command);
 
-        this.createCategoryCommandHandler
-            .handle(createCategoryCommand)
-            .then((results: CreateCategoryCommandResult) => res.status(CREATED).json(results))
-            .catch((error: any) => next(error));
+            res.status(httpStatus.CREATED).json(result);
+        } catch (e) {
+            next(e);
+        }
     }
 }

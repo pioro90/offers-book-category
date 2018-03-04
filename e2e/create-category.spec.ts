@@ -11,24 +11,21 @@ chai.should();
 
 describe('Create category', () => {
 
-    before(() => {
-        return app.startUp();
+    before(async () => {
+        await app.startUp();
     });
 
-    after(() => {
-        return CategoryAppTest.cleanDatabase()
-            .then(() => app.shutDown());
+    after(async () => {
+        await CategoryAppTest.cleanDatabase();
+        await app.shutDown();
     });
 
-    it('should return created category id', () => {
-        return chaiRequest
+    it('should return created category id', async () => {
+        const res: any = await chaiRequest
             .post('/categories')
-            .send(categories[0])
-            .then(res => {
-                res.should.have.status(httpStatus.CREATED);
-                res.body.should.have.all.keys('id');
-            })
-
+            .send(categories[0]);
+        res.should.have.status(httpStatus.CREATED);
+        res.body.should.have.all.keys('id');
     });
 
 });

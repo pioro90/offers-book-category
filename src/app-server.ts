@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import * as bodyParser from 'body-parser';
-import { ApiRouter } from './api/api-router';
+import { AppRouter } from './app.router';
 import { AppDatabase } from './app-database';
 
 
@@ -10,7 +10,7 @@ import { AppDatabase } from './app-database';
 export class AppServer {
     server: express.Application;
 
-    constructor(@inject(ApiRouter) private appRouter: ApiRouter,
+    constructor(@inject(AppRouter) private appRouter: AppRouter,
                 @inject(AppDatabase) private appDatabase: AppDatabase) {
         this.server = express();
         this.server.use(helmet());

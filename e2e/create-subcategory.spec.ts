@@ -10,53 +10,40 @@ import { CategoryAppTest } from './shared/category-app.test';
 chai.should();
 
 describe('Create subcategory', () => {
-    let parentCategoryId;
+    let parentCategoryId: string;
 
-    before(() => {
-        return app.startUp()
-            .then(() => {
-                return chaiRequest
-                    .post('/categories')
-                    .send(categories[0]);
-            })
-            .then(res => {
-                parentCategoryId = res.body.id;
-            });
+    before(async () => {
+        await app.startUp();
+
+        const res: any = await chaiRequest
+            .post('/categories')
+            .send(categories[0]);
+        parentCategoryId = res.body.id;
     });
 
-    after(() => {
-        return CategoryAppTest.cleanDatabase()
-            .then(() => app.shutDown());
+    after(async () => {
+        await CategoryAppTest.cleanDatabase();
+        await app.shutDown();
     });
 
-    it('should return subcategory id', () => {
-        return chaiRequest
+    it('should return subcategory id', async () => {
+        const res: any = await chaiRequest
             .post(`/categories/${parentCategoryId}`)
-            .send(categories[1])
-            .then(res => {
-                res.should.have.status(httpStatus.CREATED);
-                return res.body;
-            })
-            .then(result => {
-                result.should.have.all.keys('id');
-            });
+            .send(categories[1]);
+        res.body.should.have.all.keys('id');
     });
 
-    it('should create subcategory with set parent and ancestors', () => {
-        return chaiRequest
+    it('should create subcategory with set parent and ancestors', async () => {
+        const createSubcategoryResponse: any = await chaiRequest
             .post(`/categories/${parentCategoryId}`)
-            .send(categories[1])
-            .then(res => res.body.id)
-            .then(categoryId => {
-                return chaiRequest
-                    .get(`/categories/${categoryId}`)
-                    .then(res => res.body);
-            })
-            .then(category => {
-                category.parent.should.equal(parentCategoryId);
-                category.ancestors.should.have.lengthOf(1);
-                category.ancestors.should.deep.equal([parentCategoryId]);
-            })
+            .send(categories[1]);
+        const getSubcategoryResponse: any = await chaiRequest
+            .get(`/categories/${createSubcategoryResponse.body.id}`);
+        const subcategory: any = getSubcategoryResponse.body;
+
+        subcategory.parent.should.equal(parentCategoryId);
+        subcategory.ancestors.should.have.lengthOf(1);
+        subcategory.ancestors.should.deep.equal([parentCategoryId]);
     });
 
 });

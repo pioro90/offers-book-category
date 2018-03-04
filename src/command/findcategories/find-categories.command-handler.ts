@@ -11,8 +11,9 @@ export class FindCategoriesCommandHandler implements CommandHandler<FindCategori
     constructor(@inject(CategoryRepository) private categoryRepository: CategoryRepository) {
     }
 
-    handle(command: FindCategoriesCommand): Promise<FindCategoriesCommandResult> {
-        return this.categoryRepository.find(command)
-            .then((categories: ICategory[]) => new FindCategoriesCommandResult(categories));
+    async handle(command: FindCategoriesCommand): Promise<FindCategoriesCommandResult> {
+        const categories: ICategory[] = await this.categoryRepository.find(command);
+
+        return new FindCategoriesCommandResult(categories);
     }
 }
